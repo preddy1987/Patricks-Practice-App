@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PracticeApp.Models
 {
-    abstract class BaseDBModel
+    public abstract class BaseDBModel
     {
         public int? Id;
     }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PracticeApp.Models
 {
-    class List : BaseDBModel
+    public class List : BaseDBModel
     {
         public string Name { get; set; }
         public string Description { get; set; }

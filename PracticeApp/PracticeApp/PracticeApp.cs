@@ -1,12 +1,21 @@
-﻿using System;
+﻿using PracticeApp.DAL.Interfaces;
+using PracticeApp.Models;
+using System;
 
 namespace PracticeApp
 {
-    class Program
+    public class PracticeApp
     {
-        static void Main(string[] args)
+        IAppDatabase _database;
+
+        public string CurrentUser { get; set; }
+        public Task CurrentTask { get; set; }
+        public List CurrentList { get; set; }
+        PracticeApp(IAppDatabase database)
         {
-            Console.WriteLine("Hello World!");
+            _database = database;
         }
+
+
     }
 }
