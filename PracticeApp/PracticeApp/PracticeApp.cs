@@ -38,7 +38,7 @@ namespace PracticeApp
             }
             else
             {
-                _database.RegisterUser(newUser);
+                _database.CreateUser(newUser);
                 LoginUser(newUser);
             }
         }
@@ -132,6 +132,27 @@ namespace PracticeApp
             if (CurrentUser != null)
             {
                 _database.UpdateTask(updatedTask, listId);
+            }
+            else
+            {
+                throw new Exception("You're not currently logged in. Please login again.");
+            }
+        }
+
+        public void RemoveTask(int? taskId)
+        {
+            Task task = new Task();
+            try
+            {
+                task = _database.GetTask(taskId);
+            }
+            catch
+            {
+            }
+
+            if (CurrentUser != null)
+            {
+                _database.DeleteTask(taskId);
             }
             else
             {

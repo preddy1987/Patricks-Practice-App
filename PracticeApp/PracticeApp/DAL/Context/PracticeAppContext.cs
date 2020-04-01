@@ -7,10 +7,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PracticeApp.DAL
 {
-    class PracticeAppContext
+    public class PracticeAppContext: DbContext
     {
         public DbSet<User> User { get; set; }
         public DbSet<Task> Task { get; set; }
         public DbSet<List> List { get; set; }
+
+        public PracticeAppContext(DbContextOptions<PracticeAppContext> options) : base(options)
+        {
+
+        }
     }
 }

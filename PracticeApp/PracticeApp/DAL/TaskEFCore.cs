@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PracticeApp.DAL
 {
-    class TaskEFCore
+    public class TaskEFCore
     {
     }
 }
