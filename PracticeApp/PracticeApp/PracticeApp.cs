@@ -1,115 +1,79 @@
-﻿using PracticeApp.DAL.Interfaces;
-using PracticeApp.Models;
+﻿using PracticeApp.Models;
 using System;
+using System.Collections.Generic;
 
 namespace PracticeApp
 {
-    public class PracticeApp
+    public class ToDoApp
     {
         #region Properties and Member Variables
-        IAppDatabase _database;
-        public User CurrentUser { get; set; }
         public Task CurrentTask { get; set; }
-        public List CurrentList { get; set; }
+        public TaskList CurrentTaskList { get; set; }
+        public Dictionary<int,TaskList> CurrentListOfTaskLists { get; set; }
         #endregion
 
         #region Constructors
-        PracticeApp(IAppDatabase database)
+        public ToDoApp()
         {
-            _database = database;
+            CurrentListOfTaskLists = new Dictionary<int, TaskList>();
+            TaskList testTaskListOne = new TaskList()
+            {
+                Name = "Code!",
+                Description = "Eat Sleep Code"
+            };
+            TaskList testTaskListTwo = new TaskList()
+            {
+                Name = "Social Distancing",
+                Description = "Maintain a healthy isolation from others"
+            };
+            TaskList testTaskListThree = new TaskList()
+            {
+                Name = "Grocery List",
+                Description = "Things to get from the store"
+            };
+            AddNewList(testTaskListOne);
+            AddNewList(testTaskListTwo);
+            AddNewList(testTaskListThree);
+
         }
         #endregion
 
-        #region User Methods
-        public void RegisterUser(User newUser)
+        #region TaskList Methods
+        public void SetCurrentTaskList(int taskListId)
         {
-            User user = null;
-            try
+            foreach (KeyValuePair<int, TaskList> taskList in CurrentListOfTaskLists)
             {
-                user = _database.GetUser(newUser.UserName);
-            }
-            catch (Exception)
-            {
-            }
-
-            if (user != null)
-            {
-                throw new Exception("User Name is already taken. Please select a different user name");
-            }
-            else
-            {
-                _database.CreateUser(newUser);
-                LoginUser(newUser);
+                if (taskList.Key == taskListId)
+                {
+                    CurrentTaskList = taskList.Value;
+                }
             }
         }
-
-        public void LoginUser(User newUser)
+        public void AddNewList(TaskList newList)
         {
-            User user = null;
-            try
+            int key = CurrentListOfTaskLists.Count + 1;
+            newList.Id = key;
+            CurrentListOfTaskLists.Add(key, newList);
+        }
+        public void ChangeList(TaskList updatedList)
+        {
+           foreach(KeyValuePair<int,TaskList> taskList in CurrentListOfTaskLists)
             {
-                user = _database.GetUser(newUser.UserName);
-            }
-            catch (Exception)
-            {
-                throw new Exception("Your login credentials did not match any of our records. Please try again.");
-            }
-
-            if (user != null)
-            {
-                CurrentUser = user;
+                if(taskList.Key == CurrentTaskList.Id)
+                {
+                    taskList.Value.Description = updatedList.Description;
+                    taskList.Value.Name = updatedList.Name;
+                }
             }
         }
-
-        public void LogoutUser()
+        public void RemoveList()
         {
-            CurrentUser = null;
-        }
-        #endregion
-
-        #region List Methods
-        public void AddNewList(List newList)
-        {
-            if(CurrentUser != null)
+            foreach (KeyValuePair<int, TaskList> taskList in CurrentListOfTaskLists)
             {
-                _database.CreateList(newList,CurrentUser.Id);
-            }
-            else
-            {
-                throw new Exception("You're not currently logged in. Please login again.");
-            }
-        }
-
-        public void ChangeList(List updatedList)
-        {
-            if(CurrentUser != null)
-            {
-                _database.UpdateList(updatedList, CurrentUser.Id);
-            }
-            else
-            {
-                throw new Exception("You're not currently logged in. Please login again.");
-            }
-        }
-
-        public void RemoveList(List deleteList)
-        {
-            List list = new List();
-            try
-            {
-                list = _database.GetList(deleteList.Id,CurrentUser.Id);
-            }
-            catch
-            {
-            }
-
-            if (CurrentUser != null)
-            {
-                _database.DeleteList(deleteList, CurrentUser.Id);
-            }
-            else
-            {
-                throw new Exception("You're not currently logged in. Please login again.");
+                if (taskList.Key == CurrentTaskList.Id)
+                {
+                    CurrentListOfTaskLists.Remove(taskList.Key);
+                }
             }
         }
         #endregion
@@ -117,47 +81,17 @@ namespace PracticeApp
         #region Task Methods
         public void AddNewTask(Task newTask, int? listId)
         {
-            if (CurrentUser != null)
-            {
-                _database.UpdateTask(newTask, listId);
-            }
-            else
-            {
-                throw new Exception("You're not currently logged in. Please login again.");
-            }
+           
         }
 
         public void ChangeTask(Task updatedTask, int? listId)
         {
-            if (CurrentUser != null)
-            {
-                _database.UpdateTask(updatedTask, listId);
-            }
-            else
-            {
-                throw new Exception("You're not currently logged in. Please login again.");
-            }
+            
         }
 
         public void RemoveTask(int? taskId)
         {
-            Task task = new Task();
-            try
-            {
-                task = _database.GetTask(taskId);
-            }
-            catch
-            {
-            }
-
-            if (CurrentUser != null)
-            {
-                _database.DeleteTask(taskId);
-            }
-            else
-            {
-                throw new Exception("You're not currently logged in. Please login again.");
-            }
+           
         }
         #endregion
 

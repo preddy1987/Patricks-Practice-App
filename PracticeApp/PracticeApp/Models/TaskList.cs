@@ -4,10 +4,9 @@ using System.Text;
 
 namespace PracticeApp.Models
 {
-    public class List : BaseDBModel
+    public class TaskList : BaseItem
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public int UserId { get; set; }
     }
 }
