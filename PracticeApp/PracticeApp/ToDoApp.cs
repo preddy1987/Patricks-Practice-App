@@ -93,7 +93,7 @@ namespace PracticeApp
         {
            foreach(KeyValuePair<int,TaskList> taskList in CurrentDictOfTaskLists)
             {
-                if(taskList.Key == CurrentTaskList.Id)
+                if(taskList.Key == updatedList.Id)
                 {
                     taskList.Value.Description = updatedList.Description;
                     taskList.Value.Name = updatedList.Name;
@@ -114,10 +114,12 @@ namespace PracticeApp
         {
             if(CurrentDictOfTasks.ContainsKey(newTask.ListId))
             {
+                newTask.Id = CurrentDictOfTasks[newTask.ListId].Count + 1;
                 CurrentDictOfTasks[newTask.ListId].Add(newTask);
             }
             else
             {
+                newTask.Id = 1;
                 CurrentDictOfTasks.Add(newTask.ListId, new List<ToDoTask>() { newTask });
             }
         }
