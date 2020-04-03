@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PracticeApp;
+using System;
 
 namespace PracticeAppCLI
 {
@@ -6,7 +7,9 @@ namespace PracticeAppCLI
     {
         static void Main(string[] args)
         {
-            PracticeAppCLI appCLI = new PracticeAppCLI();
+            ToDoApp toDoApp = new ToDoApp();
+            toDoApp.CreateDummyData();
+            PracticeAppCLI appCLI = new PracticeAppCLI(toDoApp);
             appCLI.MainMenu();
         }
     }

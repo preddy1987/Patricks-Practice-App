@@ -7,7 +7,14 @@ namespace PracticeAppCLI
 {
     class PracticeAppCLI
     {
-        public ToDoApp toDoApp = new ToDoApp();
+        public ToDoApp ToDoApp { get; set; }
+
+        #region Constructors
+        public PracticeAppCLI(ToDoApp toDoApp)
+        {
+            ToDoApp = toDoApp;
+        }
+        #endregion
         public void MainMenu()
         {
             bool inMainMenu = true;
@@ -53,10 +60,12 @@ namespace PracticeAppCLI
                 Console.Clear();
                 Console.WriteLine("[0] Return to Main Menu");
                 Console.WriteLine();
-                foreach(KeyValuePair<int,TaskList> taskList in toDoApp.CurrentListOfTaskLists)
+                foreach(KeyValuePair<int,TaskList> taskList in ToDoApp.CurrentDictOfTaskLists)
                 {
                     Console.WriteLine($"[{taskList.Key}] {taskList.Value.Name}");
                 }
+
+                Console.ReadKey();
             }
             
 
