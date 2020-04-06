@@ -25,26 +25,16 @@ namespace PracticeAppCLI
                 Console.WriteLine("Practice ToDo Console App");
                 Console.WriteLine();
                 Console.WriteLine("[1] View your ToDo Lists");
-                Console.WriteLine("[2] Add a new ToDo List");
-                Console.WriteLine("[3] Make changes to your ToDo List");
-                Console.WriteLine("[4] Exit");
+                Console.WriteLine("[0] Exit");
                 Console.WriteLine();
 
-                int selection = NavigationTools.SelectSingleIntOption(1, 4);
+                int selection = NavigationTools.SelectSingleIntOption(0, 1);
                 if(selection == 1)
                 {
                     inMainMenu = false;
                     DisplayToDoLists();
                 }
-                else if(selection == 2)
-                {
-                    inMainMenu = false;
-                }
-                else if(selection == 3)
-                {
-                    inMainMenu = false;
-                }
-                else if(selection == 4)
+                else if(selection == 0)
                 {
                     inMainMenu = false;
                 }
@@ -65,10 +55,63 @@ namespace PracticeAppCLI
                     Console.WriteLine($"[{taskList.Key}] {taskList.Value.Name}");
                 }
 
+                int selection = NavigationTools.SelectSingleIntOption("Select a list to view or make changes",0, ToDoApp.CurrentDictOfTaskLists.Count);
+
+                if (selection == 0)
+                {
+                    inDisplayToDoLists = false;
+                    MainMenu();
+                }
+                else if (selection > 0 && selection <= ToDoApp.CurrentDictOfTaskLists.Count)
+                {
+                    ToDoApp.SetCurrentTaskList(selection);
+                    ViewOrEditList();
+                    inDisplayToDoLists = false;
+                }
+            }
+        }
+
+        public void ViewOrEditList()
+        {
+            bool inViewOrEditList = true;
+            while(inViewOrEditList)
+            {
+                Console.Clear();
+                Console.WriteLine();
+                Console.WriteLine($"Name: {ToDoApp.CurrentDictOfTaskLists[(int)ToDoApp.CurrentTaskList.Id].Name}");
+                Console.WriteLine($"Description: {ToDoApp.CurrentDictOfTaskLists[(int)ToDoApp.CurrentTaskList.Id].Description}");
+                Console.WriteLine();
+                Console.WriteLine("[0] To return to the ToDo Lists");
+                Console.WriteLine("[1] View Tasks");
+                Console.WriteLine("[2] Edit List");
+
+                int selection = NavigationTools.SelectSingleIntOption(0, 2);
+                if (selection == 0)
+                {
+
+                }
+                else if (selection == 1)
+                {
+                    inViewOrEditList = false;
+                    DisplayToDoTasks();
+                }
+            }
+        }
+        public void DisplayToDoTasks()
+        {
+            bool inDisplayToDoTasks = true;
+
+            while(inDisplayToDoTasks)
+            {
+                Console.Clear();
+                Console.WriteLine("[0] Return to To Do Lists");
+                Console.WriteLine();
+                foreach(ToDoTask task in ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id])
+                {
+                    Console.WriteLine($"[{task.Id}] {task.Name}");
+                }
                 Console.ReadKey();
             }
-            
-
         }
     }
 }
