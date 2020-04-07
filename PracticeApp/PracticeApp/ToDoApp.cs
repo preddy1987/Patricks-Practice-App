@@ -119,14 +119,9 @@ namespace PracticeApp
         #region TaskList Methods
         public void SetCurrentTaskList(int taskListId)
         {
-            foreach (KeyValuePair<int, TaskList> taskList in CurrentDictOfTaskLists)
-            {
-                if (taskList.Key == taskListId)
-                {
-                    CurrentTaskList = taskList.Value;
-                }
-            }
+            CurrentTaskList = CurrentDictOfTaskLists[taskListId];
         }
+
         public void AddNewList(TaskList newList)
         {
             int key = CurrentDictOfTaskLists.Count + 1;
@@ -139,8 +134,14 @@ namespace PracticeApp
             {
                 if(taskList.Key == updatedList.Id)
                 {
-                    taskList.Value.Description = updatedList.Description;
-                    taskList.Value.Name = updatedList.Name;
+                    if(!String.IsNullOrEmpty(updatedList.Description))
+                    {
+                        taskList.Value.Description = updatedList.Description;
+                    }
+                    if (!String.IsNullOrEmpty(updatedList.Name))
+                    {
+                        taskList.Value.Name = updatedList.Name;
+                    }                      
                 }
             }
         }
@@ -154,6 +155,19 @@ namespace PracticeApp
         #endregion
 
         #region Task Methods
+        public void SetCurrentTask(int taskId, int taskListId)
+        {
+            if (CurrentDictOfTasks.ContainsKey(taskListId))
+            {
+                foreach (ToDoTask task in CurrentDictOfTasks[taskListId])
+                {
+                    if(task.Id == taskId)
+                    {
+                        CurrentTask = task;
+                    }
+                }
+            }
+        }
         public void AddNewTask(ToDoTask newTask)
         {
             if(CurrentDictOfTasks.ContainsKey(newTask.ListId))
@@ -175,8 +189,14 @@ namespace PracticeApp
                 {
                     if(task.Id == updatedTask.Id)
                     {
-                        task.Name = updatedTask.Name;
-                        task.Description = updatedTask.Description;
+                        if(!String.IsNullOrEmpty(updatedTask.Name))
+                        {
+                            task.Name = updatedTask.Name;
+                        }
+                        if (!String.IsNullOrEmpty(updatedTask.Description))
+                        {
+                            task.Description = updatedTask.Description;
+                        }                           
                     }
                 }
             }

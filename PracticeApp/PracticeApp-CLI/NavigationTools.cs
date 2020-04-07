@@ -66,5 +66,58 @@ namespace PracticeAppCLI
 
             return result;
         }
+
+        public static string GetString(string message)
+        {
+            string userInput = String.Empty;
+            int attempts = 0;
+
+            do
+            {
+                if (attempts > 0)
+                {
+                    Console.WriteLine("Invalid input format. Please try again");
+                }
+
+                Console.Write(message + " ");
+                userInput = Console.ReadLine();
+                attempts++;
+            }
+            while (String.IsNullOrEmpty(userInput));
+
+            return userInput;
+        }
+        public static bool GetBoolYorN(string message)
+        {
+            string userInput = String.Empty;
+            bool boolValue = false;
+            bool hasValidSelection = false;
+            int attempts = 0;
+
+            do
+            {
+                if (attempts > 0)
+                {
+                    Console.WriteLine("Invalid input format. Please try again");
+                }
+
+                Console.Write(message + " ");
+                userInput = Console.ReadKey().KeyChar.ToString();
+                attempts++;
+                if (userInput.ToLower() == "y")
+                {
+                    boolValue = true;
+                    hasValidSelection = true;
+                }
+                else if (userInput.ToLower() == "n")
+                {
+                    boolValue = false;
+                    hasValidSelection = true;
+                }
+            }
+            while (!hasValidSelection);
+
+            return boolValue;
+        }
     }
 }
