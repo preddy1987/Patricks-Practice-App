@@ -5,9 +5,9 @@ using PracticeApp;
 
 namespace PracticeAppCLI
 {
-    class PracticeAppCLI
+    public class PracticeAppCLI
     {
-        public ToDoApp ToDoApp { get; set; }
+        private ToDoApp ToDoApp { get; set; }
 
         #region Constructors
         public PracticeAppCLI(ToDoApp toDoApp)
@@ -41,21 +41,22 @@ namespace PracticeAppCLI
             }
         }
 
-        public void DisplayToDoLists()
+        #region ToDo List Menus
+        private void DisplayToDoLists()
         {
             bool inDisplayToDoLists = true;
 
-            while(inDisplayToDoLists)
+            while (inDisplayToDoLists)
             {
                 Console.Clear();
                 Console.WriteLine("[0] Return to Main Menu");
                 Console.WriteLine();
-                foreach(KeyValuePair<int,TaskList> taskList in ToDoApp.CurrentDictOfTaskLists)
+                foreach (KeyValuePair<int, TaskList> taskList in ToDoApp.CurrentDictOfTaskLists)
                 {
                     Console.WriteLine($"[{taskList.Key}] {taskList.Value.Name}");
                 }
 
-                int selection = NavigationTools.SelectSingleIntOption("Select a list to view or make changes",0, ToDoApp.CurrentDictOfTaskLists.Count);
+                int selection = NavigationTools.SelectSingleIntOption("Select a list to view or make changes", 0, ToDoApp.CurrentDictOfTaskLists.Count);
 
                 if (selection == 0)
                 {
@@ -70,11 +71,10 @@ namespace PracticeAppCLI
                 }
             }
         }
-
-        public void ViewTaskOrEditList()
+        private void ViewTaskOrEditList()
         {
             bool inViewOrEditList = true;
-            while(inViewOrEditList)
+            while (inViewOrEditList)
             {
                 Console.Clear();
                 Console.WriteLine();
@@ -96,74 +96,14 @@ namespace PracticeAppCLI
                     inViewOrEditList = false;
                     DisplayToDoTasks();
                 }
-                else if(selection == 2)
+                else if (selection == 2)
                 {
                     inViewOrEditList = false;
                     EditToDoList();
                 }
             }
         }
-        public void DisplayToDoTasks()
-        {
-            bool inDisplayToDoTasks = true;
-
-            while(inDisplayToDoTasks)
-            {
-                Console.Clear();
-                Console.WriteLine("[0] Return to To Do Lists");
-                Console.WriteLine();
-                foreach(ToDoTask task in ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id])
-                {
-                    Console.WriteLine($"[{task.Id}] {task.Name}");
-                }
-                int selection = NavigationTools.SelectSingleIntOption("Select a ToDo Task to see more details...", 0, ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count);
-                if(selection == 0)
-                {
-                    inDisplayToDoTasks = false;
-                    DisplayToDoLists();
-                }
-                if(selection > 0 && selection <= ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count)
-                {
-                    inDisplayToDoTasks = false;
-                    ToDoApp.SetCurrentTask(selection, (int)ToDoApp.CurrentTaskList.Id);
-                    DisplayToDoTaskDetails();
-                }
-            }
-        }
-
-        private void DisplayToDoTaskDetails()
-        {
-            bool inTaskDetails = true;
-            while(inTaskDetails)
-            {
-                Console.Clear();
-                Console.WriteLine($"Name: {ToDoApp.CurrentTask.Name}");
-                Console.WriteLine($"Description: {ToDoApp.CurrentTask.Description}");
-                Console.WriteLine();
-                Console.WriteLine($"[0] Return to {ToDoApp.CurrentTaskList.Name} Task List");
-                Console.WriteLine("[1] Edit Task");
-
-                int selection = NavigationTools.SelectSingleIntOption(0,1);
-
-                if(selection == 0)
-                {
-                    inTaskDetails = false;
-                    DisplayToDoTasks();
-                }
-                else if(selection == 1)
-                {
-                    inTaskDetails = false;
-                    EditToDoTask();
-                }
-            }
-        }
-
-        private void EditToDoTask()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void EditToDoList()
+        private void EditToDoList()
         {
             bool inEditList = true;
             string name = String.Empty;
@@ -173,21 +113,21 @@ namespace PracticeAppCLI
                 Id = ToDoApp.CurrentTaskList.Id,
             };
 
-            while(inEditList)
+            while (inEditList)
             {
                 Console.Clear();
                 Console.WriteLine($"Name: {ToDoApp.CurrentTaskList.Name}");
                 Console.WriteLine($"Description: {ToDoApp.CurrentTaskList.Description}");
                 Console.WriteLine();
-                if(!String.IsNullOrEmpty(name))
+                if (!String.IsNullOrEmpty(name))
                 {
                     Console.WriteLine($"New Name: {name}");
                 }
-                if(!String.IsNullOrEmpty(desc))
+                if (!String.IsNullOrEmpty(desc))
                 {
                     Console.WriteLine($"New Description: {desc}");
                 }
-                if(!String.IsNullOrEmpty(name) || !String.IsNullOrEmpty(desc))
+                if (!String.IsNullOrEmpty(name) || !String.IsNullOrEmpty(desc))
                 {
                     Console.WriteLine();
                 }
@@ -198,24 +138,24 @@ namespace PracticeAppCLI
 
                 int selection = NavigationTools.SelectSingleIntOption(0, 3);
 
-                if(selection == 0)
+                if (selection == 0)
                 {
                     inEditList = false;
                     DisplayToDoLists();
                 }
-                else if(selection == 1)
+                else if (selection == 1)
                 {
                     Console.WriteLine();
                     name = NavigationTools.GetString("Please enter a new name: ");
                     taskList.Name = name;
                 }
-                else if(selection == 2)
+                else if (selection == 2)
                 {
                     Console.WriteLine();
                     desc = NavigationTools.GetString("Please enter a new description: ");
                     taskList.Description = desc;
                 }
-                else if(selection == 3)
+                else if (selection == 3)
                 {
                     Console.Clear();
                     Console.WriteLine($"Name: {ToDoApp.CurrentTaskList.Name}");
@@ -228,12 +168,155 @@ namespace PracticeAppCLI
                     Console.WriteLine();
                     bool saveChanges = NavigationTools.GetBoolYorN("Are you sure you want save these changes? [Y/N]: ");
 
-                    if(saveChanges)
+                    if (saveChanges)
                     {
                         ToDoApp.ChangeList(taskList);
                     }
-                }               
+                }
             }
         }
+        #endregion
+
+        #region ToDo Tasks Menus
+        private void DisplayToDoTasks()
+        {
+            bool inDisplayToDoTasks = true;
+
+            while (inDisplayToDoTasks)
+            {
+                Console.Clear();
+                Console.WriteLine("[0] Return to To Do Lists");
+                Console.WriteLine();
+                foreach (ToDoTask task in ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id])
+                {
+                    Console.WriteLine($"[{task.Id}] {task.Name}");
+                }
+                Console.WriteLine();
+                int selection = NavigationTools.SelectSingleIntOption("Select a ToDo Task to see more details...", 0, ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count);
+                if (selection == 0)
+                {
+                    inDisplayToDoTasks = false;
+                    DisplayToDoLists();
+                }
+                if (selection > 0 && selection <= ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count)
+                {
+                    inDisplayToDoTasks = false;
+                    ToDoApp.SetCurrentTask(selection, (int)ToDoApp.CurrentTaskList.Id);
+                    DisplayToDoTaskDetails();
+                }
+            }
+        }
+        private void DisplayToDoTaskDetails()
+        {
+            bool inTaskDetails = true;
+            while (inTaskDetails)
+            {
+                Console.Clear();
+                Console.WriteLine($"Name: {ToDoApp.CurrentTask.Name}");
+                Console.WriteLine($"Description: {ToDoApp.CurrentTask.Description}");
+                Console.WriteLine();
+                Console.WriteLine($"[0] Return to {ToDoApp.CurrentTaskList.Name} Task List");
+                Console.WriteLine("[1] Edit Task");
+                Console.WriteLine("[2] Remove Task");
+                Console.WriteLine();
+                int selection = NavigationTools.SelectSingleIntOption(0, 2);
+
+                if (selection == 0)
+                {
+                    inTaskDetails = false;
+                    DisplayToDoTasks();
+                }
+                else if (selection == 1)
+                {
+                    inTaskDetails = false;
+                    EditToDoTask();
+                }
+                else if(selection == 2)
+                {
+                    Console.WriteLine();
+                    bool removeTask = NavigationTools.GetBoolYorN($"Are you sure you want permanently remove {ToDoApp.CurrentTask.Name}? [Y/N]: ");
+                    if(removeTask)
+                    {
+                        inTaskDetails = false;
+                        ToDoApp.RemoveTask(ToDoApp.CurrentTask.ListId, ToDoApp.CurrentTask.Id);
+                        DisplayToDoTasks();
+                    }
+                }
+            }
+        }
+        private void EditToDoTask()
+        {
+            bool inEditTask = true;
+            string name = String.Empty;
+            string desc = String.Empty;
+            ToDoTask task = new ToDoTask()
+            {
+                Id = ToDoApp.CurrentTask.Id,
+                ListId = ToDoApp.CurrentTask.ListId
+            };
+
+            while (inEditTask)
+            {
+                Console.Clear();
+                Console.WriteLine($"Name: {ToDoApp.CurrentTask.Name}");
+                Console.WriteLine($"Description: {ToDoApp.CurrentTask.Description}");
+                Console.WriteLine();
+                if (!String.IsNullOrEmpty(name))
+                {
+                    Console.WriteLine($"New Name: {name}");
+                }
+                if (!String.IsNullOrEmpty(desc))
+                {
+                    Console.WriteLine($"New Description: {desc}");
+                }
+                if (!String.IsNullOrEmpty(name) || !String.IsNullOrEmpty(desc))
+                {
+                    Console.WriteLine();
+                }
+                Console.WriteLine($"[0] Return to {ToDoApp.CurrentTaskList.Name} Tasks");
+                Console.WriteLine("[1] Change Name");
+                Console.WriteLine("[2] Change Description");
+                Console.WriteLine("[3] Save your changes");
+
+                int selection = NavigationTools.SelectSingleIntOption(0, 3);
+
+                if (selection == 0)
+                {
+                    inEditTask = false;
+                    DisplayToDoTasks();
+                }
+                else if (selection == 1)
+                {
+                    Console.WriteLine();
+                    name = NavigationTools.GetString("Please enter a new name: ");
+                    task.Name = name;
+                }
+                else if (selection == 2)
+                {
+                    Console.WriteLine();
+                    desc = NavigationTools.GetString("Please enter a new description: ");
+                    task.Description = desc;
+                }
+                else if (selection == 3)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Name: {ToDoApp.CurrentTask.Name}");
+                    Console.WriteLine($"Description: {ToDoApp.CurrentTask.Description}");
+                    Console.WriteLine();
+                    Console.WriteLine("To...");
+                    Console.WriteLine();
+                    Console.WriteLine($"Name: {task.Name}");
+                    Console.WriteLine($"Description: {task.Description}");
+                    Console.WriteLine();
+                    bool saveChanges = NavigationTools.GetBoolYorN("Are you sure you want save these changes? [Y/N]: ");
+
+                    if (saveChanges)
+                    {
+                        ToDoApp.ChangeTask(task);
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }

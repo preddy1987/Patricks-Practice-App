@@ -145,16 +145,70 @@ namespace PracticeApp
                 }
             }
         }
-        public void RemoveList(int? taskListId)
+        /// <summary>
+        /// Removes the TaskList and its associated ToDoTasks
+        /// </summary>
+        /// <param name="taskListId"></param>
+        public void RemoveListandTasks(int? taskListId)
         {
             if(CurrentDictOfTaskLists.ContainsKey((int)taskListId))
             {
                 CurrentDictOfTaskLists.Remove((int)taskListId);
             }
+            if(CurrentDictOfTasks.ContainsKey((int)taskListId))
+            {
+                CurrentDictOfTasks.Remove((int)taskListId);
+            }
+            ReOrderToDoTaskandTaskListDictionaries();
+        }
+        private void ReOrderToDoTaskandTaskListDictionaries()
+        {
+            int listCounter = 0;
+            Dictionary<int, TaskList> updatedDictOfTaskLists = new Dictionary<int, TaskList>();
+            Dictionary<int, List<ToDoTask>> updatedDictOfTasks = new Dictionary<int, List<ToDoTask>>();
+            foreach (KeyValuePair<int,TaskList> taskList in CurrentDictOfTaskLists)
+            {
+                listCounter++;
+                if(taskList.Key > listCounter)
+                {
+                    taskList.Value.Id = listCounter;
+                }
+                updatedDictOfTaskLists.Add((int)taskList.Value.Id, taskList.Value);
+            }
+
+            listCounter = 0;
+            foreach (KeyValuePair<int, List<ToDoTask>> toDoTaskList in CurrentDictOfTasks)
+            {
+                listCounter++;
+                if (toDoTaskList.Key > listCounter)
+                {
+                    foreach (ToDoTask task in CurrentDictOfTasks[toDoTaskList.Key])
+                    {
+                        task.ListId = listCounter;
+                    }
+                }
+                updatedDictOfTasks.Add(listCounter, toDoTaskList.Value);
+            }
+
+            CurrentDictOfTaskLists.Clear();
+            foreach(KeyValuePair<int, TaskList> taskList in updatedDictOfTaskLists)
+            {
+                CurrentDictOfTaskLists.Add(taskList.Key, taskList.Value);
+            }
+            CurrentDictOfTasks.Clear();
+            foreach(KeyValuePair<int, List<ToDoTask>> toDoTaskList in updatedDictOfTasks)
+            {
+                CurrentDictOfTasks.Add(toDoTaskList.Key,toDoTaskList.Value);
+            }
         }
         #endregion
 
         #region Task Methods
+        /// <summary>
+        /// Set the Currently Selected ToDo Task
+        /// </summary>
+        /// <param name="taskId"></param>
+        /// <param name="taskListId"></param>
         public void SetCurrentTask(int taskId, int taskListId)
         {
             if (CurrentDictOfTasks.ContainsKey(taskListId))
@@ -201,7 +255,11 @@ namespace PracticeApp
                 }
             }
         }
-
+        /// <summary>
+        /// Removes Task from the Current Dictionary of Tasks
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <param name="taskId"></param>
         public void RemoveTask(int listId, int? taskId)
         {
             if (CurrentDictOfTasks.ContainsKey(listId))
@@ -213,6 +271,20 @@ namespace PracticeApp
                         CurrentDictOfTasks[listId].Remove(task);
                         break;
                     }
+                }
+                ReOrderTasks(listId);
+            }
+        }
+
+        private void ReOrderTasks(int listId)
+        {
+            int taskCounter = 0;
+            foreach(ToDoTask task in CurrentDictOfTasks[listId])
+            {
+                taskCounter++;
+                if(task.Id > taskCounter)
+                {
+                    task.Id = taskCounter;
                 }
             }
         }
