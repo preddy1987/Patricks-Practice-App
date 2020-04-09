@@ -66,15 +66,15 @@ namespace PracticeAppCLI
                 else if (selection > 0 && selection <= ToDoApp.CurrentDictOfTaskLists.Count)
                 {
                     ToDoApp.SetCurrentTaskList(selection);
-                    ViewTaskOrEditList();
+                    DisplayTaskListDetails();
                     inDisplayToDoLists = false;
                 }
             }
         }
-        private void ViewTaskOrEditList()
+        private void DisplayTaskListDetails()
         {
-            bool inViewOrEditList = true;
-            while (inViewOrEditList)
+            bool inTaskListDetails = true;
+            while (inTaskListDetails)
             {
                 Console.Clear();
                 Console.WriteLine();
@@ -84,22 +84,34 @@ namespace PracticeAppCLI
                 Console.WriteLine("[0] To return to the ToDo Lists");
                 Console.WriteLine("[1] View Tasks");
                 Console.WriteLine("[2] Edit List");
+                Console.WriteLine("[3] Remove List and all of its Tasks");
 
-                int selection = NavigationTools.SelectSingleIntOption(0, 2);
+                int selection = NavigationTools.SelectSingleIntOption(0, 3);
                 if (selection == 0)
                 {
-                    inViewOrEditList = false;
+                    inTaskListDetails = false;
                     DisplayToDoLists();
                 }
                 else if (selection == 1)
                 {
-                    inViewOrEditList = false;
+                    inTaskListDetails = false;
                     DisplayToDoTasks();
                 }
                 else if (selection == 2)
                 {
-                    inViewOrEditList = false;
+                    inTaskListDetails = false;
                     EditToDoList();
+                }
+                else if(selection == 3)
+                {
+                    Console.WriteLine();
+                    bool removeTaskList = NavigationTools.GetBoolYorN($"Are you sure you want permanently remove {ToDoApp.CurrentTaskList.Name}? [Y/N]: ");
+                    if(removeTaskList)
+                    {
+                        inTaskListDetails = false;
+                        ToDoApp.RemoveListandTasks(ToDoApp.CurrentTaskList.Id);
+                        DisplayToDoLists();
+                    }
                 }
             }
         }

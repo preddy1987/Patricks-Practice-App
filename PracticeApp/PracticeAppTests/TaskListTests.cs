@@ -195,6 +195,7 @@ namespace PracticeAppTests
             string expectedTaskListName = testTaskListThree.Name;
             string expectedTaskListDesc = testTaskListThree.Description;
             string expectedToDoTaskName = taskSeven.Name;
+            int expectedToDoTaskListId = taskSeven.ListId;
 
             int actualTaskListCount = testPracticeApp.CurrentDictOfTaskLists.Count;
             int actualToDoTaskCount = testPracticeApp.CurrentDictOfTasks.Count;
@@ -202,12 +203,14 @@ namespace PracticeAppTests
             string actualTaskListName = testPracticeApp.CurrentDictOfTaskLists[2].Name;
             string actualTaskListDesc = testPracticeApp.CurrentDictOfTaskLists[2].Description;
             string actualToDoTaskName = testPracticeApp.CurrentDictOfTasks[2][0].Name;
+            int actualToDoTaskListId = testPracticeApp.CurrentDictOfTasks[2][0].ListId;
 
             Assert.AreEqual(expectedCount, actualTaskListCount);
             Assert.AreEqual(expectedCount, actualToDoTaskCount);
             Assert.AreEqual(expectedTaskListName, actualTaskListName);
             Assert.AreEqual(expectedTaskListDesc, actualTaskListDesc);
             Assert.AreEqual(expectedToDoTaskName, actualToDoTaskName);
+            Assert.AreEqual(expectedToDoTaskListId, actualToDoTaskListId);
         }
     }
 }
