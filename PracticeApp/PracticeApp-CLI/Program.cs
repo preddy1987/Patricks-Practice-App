@@ -9,7 +9,7 @@ namespace PracticeAppCLI
         {
             ToDoApp toDoApp = new ToDoApp();
             toDoApp.CreateDummyData();
-            toDoApp.CreateEvenMoreDummyData(42);
+            toDoApp.CreateEvenMoreDummyData(43);
             PracticeAppCLI appCLI = new PracticeAppCLI(toDoApp);
             appCLI.MainMenu();
         }

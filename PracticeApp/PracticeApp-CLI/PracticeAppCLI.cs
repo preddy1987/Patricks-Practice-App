@@ -25,22 +25,27 @@ namespace PracticeAppCLI
                 Console.WriteLine("Practice ToDo Console App");
                 Console.WriteLine();
                 Console.WriteLine("[1] View your ToDo Lists");
+                Console.WriteLine("[2] Add a new ToDo List");
                 Console.WriteLine("[0] Exit");
                 Console.WriteLine();
 
-                int selection = NavigationTools.SelectSingleIntOption(0, 1);
-                if(selection == 1)
+                int selection = NavigationTools.SelectSingleIntOption(0, 2);
+                if(selection == 0)
+                {
+                    inMainMenu = false;              
+                }
+                else if(selection == 1)
                 {
                     inMainMenu = false;
                     DisplayToDoLists();
                 }
-                else if(selection == 0)
+                else if (selection == 2)
                 {
                     inMainMenu = false;
+                    DisplayAddTaskListView();
                 }
             }
         }
-
         #region ToDo List Menus
         private void DisplayToDoLists()
         {
@@ -78,6 +83,7 @@ namespace PracticeAppCLI
                     }
                     if(pageCount > 1)
                     {
+                        Console.WriteLine($"Page #{pageCount}");
                         foreach (KeyValuePair<int, TaskList> taskList in ToDoApp.CurrentDictOfTaskLists)
                         {
                             if (taskList.Key <= ((pageCount * 7)+1) && taskList.Key > ((pageCount - 1) * 7) + 1)
@@ -88,11 +94,10 @@ namespace PracticeAppCLI
                         }
                         Console.WriteLine();
                         Console.WriteLine("[8] Previous Page");
-                        if(ToDoApp.CurrentDictOfTaskLists.Count >= ((pageCount - 1) * 7) + 8)
+                        if(ToDoApp.CurrentDictOfTaskLists.Count > ((pageCount - 1) * 7) + 8)
                         {
                             Console.WriteLine("[9] Next Page");
-                        }
-                        
+                        }                       
                     }
                 }
                 Console.WriteLine("[0] Return to Main Menu");
@@ -127,7 +132,7 @@ namespace PracticeAppCLI
                 {
                     pageCount--;
                 }
-                else if(selection == 9 && hasMoreThanNineLists && ToDoApp.CurrentDictOfTaskLists.Count >= ((pageCount - 1) * 7) + 8)
+                else if(selection == 9 && hasMoreThanNineLists && ToDoApp.CurrentDictOfTaskLists.Count > ((pageCount - 1) * 7) + 8)
                 {
                     pageCount++;
                 }
@@ -146,9 +151,10 @@ namespace PracticeAppCLI
                 Console.WriteLine("[0] To return to the ToDo Lists");
                 Console.WriteLine("[1] View Tasks");
                 Console.WriteLine("[2] Edit List");
-                Console.WriteLine("[3] Remove List and all of its Tasks");
+                Console.WriteLine("[3] Add a New Task");
+                Console.WriteLine("[4] Remove List and all of its Tasks");
 
-                int selection = NavigationTools.SelectSingleIntOption(0, 3);
+                int selection = NavigationTools.SelectSingleIntOption(0, 4);
                 if (selection == 0)
                 {
                     inTaskListDetails = false;
@@ -165,6 +171,11 @@ namespace PracticeAppCLI
                     EditToDoList();
                 }
                 else if(selection == 3)
+                {
+                    inTaskListDetails = false;
+                    DisplayAddToDoTaskView();
+                }
+                else if(selection == 4)
                 {
                     Console.WriteLine();
                     bool removeTaskList = NavigationTools.GetBoolYorN($"Are you sure you want permanently remove {ToDoApp.CurrentTaskList.Name}? [Y/N]: ");
@@ -249,6 +260,86 @@ namespace PracticeAppCLI
                 }
             }
         }
+        private void DisplayAddTaskListView()
+        {
+            bool inAddTaskListView = true;
+
+            TaskList taskList = new TaskList()
+            {
+                Name = String.Empty,
+                Description = String.Empty
+            };
+
+            while(inAddTaskListView)
+            {
+                Console.Clear();
+                Console.WriteLine("Practice ToDo Console App: Creating a New ToDo List");
+                Console.WriteLine();
+                Console.WriteLine($"Name: {taskList.Name}");
+                Console.WriteLine($"Description: {taskList.Description}");
+                Console.WriteLine();
+                Console.WriteLine("[1] Add a Name");
+                Console.WriteLine("[2] Add a Description");
+                Console.WriteLine("[3] Save ToDo List");
+                Console.WriteLine("[0] Cancel and Return to the Main Menu");
+
+                int selection = NavigationTools.SelectSingleIntOption(0, 3);
+
+                if(selection == 0)
+                {
+                    inAddTaskListView = false;
+                    MainMenu();
+                }
+                else if(selection == 1)
+                {
+                    Console.WriteLine();
+                    taskList.Name = NavigationTools.GetString("Enter a Name: ");
+                }
+                else if(selection == 2)
+                {
+                    Console.WriteLine();
+                    taskList.Description = NavigationTools.GetString("Enter a Description: ");
+                }   
+                else if(selection == 3)
+                {
+                    bool saveTaskList = false;
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    if (!String.IsNullOrEmpty(taskList.Name))
+                    {
+                        if(!String.IsNullOrEmpty(taskList.Description))
+                        {
+                            saveTaskList = NavigationTools.GetBoolYorN("Are you sure you want save these changes? [Y/N]: ");
+                        }
+                        else
+                        {                           
+                            Console.WriteLine("Please add a Description to your ToDo List before saving");
+                        }
+                    }
+                    else if(String.IsNullOrEmpty(taskList.Description) && String.IsNullOrEmpty(taskList.Name))
+                    {
+                        Console.WriteLine("Please add a Name and a Description to your ToDo List before saving");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please add a Name to your ToDo List before saving");
+                    }                     
+                    
+                    if(saveTaskList)
+                    {
+                        ToDoApp.AddNewList(taskList);
+                        inAddTaskListView = false;
+                        MainMenu();
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Press any key to continue...");
+                        Console.ReadKey();
+                    }
+                }
+            }
+        }
         #endregion
 
         #region ToDo Tasks Menus
@@ -296,7 +387,7 @@ namespace PracticeAppCLI
                         }
                         Console.WriteLine();
                         Console.WriteLine("[8] Previous Page");
-                        if (ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count >= ((pageCount - 1) * 7) + 8)
+                        if (ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count > ((pageCount - 1) * 7) + 8)
                         {
                             Console.WriteLine("[9] Next Page");
                         }
@@ -333,7 +424,7 @@ namespace PracticeAppCLI
                 {
                     pageCount--;
                 }
-                else if (selection == 9 && hasMoreThanNineTasks && ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count >= ((pageCount - 1) * 7) + 8)
+                else if (selection == 9 && hasMoreThanNineTasks && ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count > ((pageCount - 1) * 7) + 8)
                 {
                     pageCount++;
                 }
@@ -446,6 +537,87 @@ namespace PracticeAppCLI
                     if (saveChanges)
                     {
                         ToDoApp.ChangeTask(task);
+                    }
+                }
+            }
+        }
+        private void DisplayAddToDoTaskView()
+        {
+            bool inAddToDoTaskView = true;
+
+            ToDoTask task = new ToDoTask()
+            {
+                ListId = (int)ToDoApp.CurrentTaskList.Id,
+                Name = String.Empty,
+                Description = String.Empty
+            };
+
+            while(inAddToDoTaskView)
+            {
+                Console.Clear();
+                Console.WriteLine("Practice ToDo Console App: Creating a New ToDo Task");
+                Console.WriteLine();
+                Console.WriteLine($"Name: {task.Name}");
+                Console.WriteLine($"Description: {task.Description}");
+                Console.WriteLine();
+                Console.WriteLine("[1] Add a Name");
+                Console.WriteLine("[2] Add a Description");
+                Console.WriteLine("[3] Save ToDo Task");
+                Console.WriteLine($"[0] Cancel and Return to {ToDoApp.CurrentTaskList.Name}'s Details page");
+
+                int selection = NavigationTools.SelectSingleIntOption(0, 3);
+
+                if (selection == 0)
+                {
+                    inAddToDoTaskView = false;
+                    DisplayTaskListDetails();
+                }
+                else if (selection == 1)
+                {
+                    Console.WriteLine();
+                    task.Name = NavigationTools.GetString("Enter a Name: ");
+                }
+                else if (selection == 2)
+                {
+                    Console.WriteLine();
+                    task.Description = NavigationTools.GetString("Enter a Description: ");
+                }
+                else if (selection == 3)
+                {
+                    bool saveTaskList = false;
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    if (!String.IsNullOrEmpty(task.Name))
+                    {
+                        if (!String.IsNullOrEmpty(task.Description))
+                        {
+                            saveTaskList = NavigationTools.GetBoolYorN("Are you sure you want save these changes? [Y/N]: ");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Please add a Description to your ToDo Task before saving");
+                        }
+                    }
+                    else if (String.IsNullOrEmpty(task.Description) && String.IsNullOrEmpty(task.Name))
+                    {
+                        Console.WriteLine("Please add a Name and a Description to your ToDo Task before saving");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please add a Name to your ToDo Task before saving");
+                    }
+
+                    if (saveTaskList)
+                    {
+                        ToDoApp.AddNewTask(task);
+                        inAddToDoTaskView = false;
+                        DisplayTaskListDetails();
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Press any key to continue...");
+                        Console.ReadKey();
                     }
                 }
             }
