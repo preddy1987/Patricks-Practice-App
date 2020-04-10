@@ -45,29 +45,91 @@ namespace PracticeAppCLI
         private void DisplayToDoLists()
         {
             bool inDisplayToDoLists = true;
+            bool hasMoreThanNineLists = false;
+            int pageCount = 1;
 
             while (inDisplayToDoLists)
             {
                 Console.Clear();
-                Console.WriteLine("[0] Return to Main Menu");
+                Console.WriteLine("Practice ToDo Console App: Currently Viewing Task Lists");
                 Console.WriteLine();
-                foreach (KeyValuePair<int, TaskList> taskList in ToDoApp.CurrentDictOfTaskLists)
+                if(ToDoApp.CurrentDictOfTaskLists.Count <= 9)
                 {
-                    Console.WriteLine($"[{taskList.Key}] {taskList.Value.Name}");
+                    foreach (KeyValuePair<int, TaskList> taskList in ToDoApp.CurrentDictOfTaskLists)
+                    {
+                        Console.WriteLine($"[{taskList.Key}] {taskList.Value.Name}");
+                    }
                 }
+                else
+                {
+                    hasMoreThanNineLists = true;
+                    if(pageCount == 1)
+                    {
+                        foreach (KeyValuePair<int, TaskList> taskList in ToDoApp.CurrentDictOfTaskLists)
+                        {
+                            if (taskList.Key <= 8)
+                            {
+                                Console.WriteLine($"[{taskList.Key}] {taskList.Value.Name}");
+                            }
 
-                int selection = NavigationTools.SelectSingleIntOption("Select a list to view or make changes", 0, ToDoApp.CurrentDictOfTaskLists.Count);
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("[9] Next Page");
+                    }
+                    if(pageCount > 1)
+                    {
+                        foreach (KeyValuePair<int, TaskList> taskList in ToDoApp.CurrentDictOfTaskLists)
+                        {
+                            if (taskList.Key <= ((pageCount * 7)+1) && taskList.Key > ((pageCount - 1) * 7) + 1)
+                            {
+                                Console.WriteLine($"[{taskList.Key - (((pageCount - 1) * 7) + 1)}] {taskList.Value.Name}");
+                            }
+
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("[8] Previous Page");
+                        if(ToDoApp.CurrentDictOfTaskLists.Count >= ((pageCount - 1) * 7) + 8)
+                        {
+                            Console.WriteLine("[9] Next Page");
+                        }
+                        
+                    }
+                }
+                Console.WriteLine("[0] Return to Main Menu");
+
+                int selection = NavigationTools.SelectSingleIntOption("Select a list to view or make changes", 0, 9);
 
                 if (selection == 0)
                 {
                     inDisplayToDoLists = false;
                     MainMenu();
                 }
-                else if (selection > 0 && selection <= ToDoApp.CurrentDictOfTaskLists.Count)
+                else if (selection > 0 && selection <= 9 && !hasMoreThanNineLists)
                 {
                     ToDoApp.SetCurrentTaskList(selection);
                     DisplayTaskListDetails();
                     inDisplayToDoLists = false;
+                }
+                else if(selection > 0 && selection <= 8 && hasMoreThanNineLists && pageCount == 1)
+                {
+                    ToDoApp.SetCurrentTaskList(selection);
+                    DisplayTaskListDetails();
+                    inDisplayToDoLists = false;
+                }
+                else if (selection > 0 && selection <= 7 && hasMoreThanNineLists && pageCount > 1)
+                {
+
+                    ToDoApp.SetCurrentTaskList(selection + ((pageCount - 1) * 7) + 1);
+                    DisplayTaskListDetails();
+                    inDisplayToDoLists = false;
+                }
+                else if(selection == 8 && hasMoreThanNineLists && pageCount > 1)
+                {
+                    pageCount--;
+                }
+                else if(selection == 9 && hasMoreThanNineLists && ToDoApp.CurrentDictOfTaskLists.Count >= ((pageCount - 1) * 7) + 8)
+                {
+                    pageCount++;
                 }
             }
         }
@@ -193,28 +255,87 @@ namespace PracticeAppCLI
         private void DisplayToDoTasks()
         {
             bool inDisplayToDoTasks = true;
+            bool hasMoreThanNineTasks = false;
+            int pageCount = 1;
 
             while (inDisplayToDoTasks)
             {
                 Console.Clear();
-                Console.WriteLine("[0] Return to To Do Lists");
+                
                 Console.WriteLine();
-                foreach (ToDoTask task in ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id])
+                if(ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count <= 9)
                 {
-                    Console.WriteLine($"[{task.Id}] {task.Name}");
+                    foreach (ToDoTask task in ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id])
+                    {
+                        Console.WriteLine($"[{task.Id}] {task.Name}");
+                    }
                 }
+                else
+                {
+                    hasMoreThanNineTasks = true;
+                    if(pageCount == 1)
+                    {
+                        foreach (ToDoTask task in ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id])
+                        {
+                            if(task.Id <= 8)
+                            {
+                                Console.WriteLine($"[{task.Id}] {task.Name}");
+                            }
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("[9] Next Page");
+                    }
+                    if(pageCount > 1)
+                    {
+                        foreach (ToDoTask task in ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id])
+                        {
+                            if (task.Id <= ((pageCount * 7) + 1) && task.Id > ((pageCount - 1) * 7) + 1)
+                            {
+                                Console.WriteLine($"[{task.Id}] {task.Name}");
+                            }
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("[8] Previous Page");
+                        if (ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count >= ((pageCount - 1) * 7) + 8)
+                        {
+                            Console.WriteLine("[9] Next Page");
+                        }
+                    }
+                }
+                Console.WriteLine("[0] Return to To Do Lists");
+
                 Console.WriteLine();
-                int selection = NavigationTools.SelectSingleIntOption("Select a ToDo Task to see more details...", 0, ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count);
+                int selection = NavigationTools.SelectSingleIntOption("Select a ToDo Task to see more details...", 0, 9);
                 if (selection == 0)
                 {
                     inDisplayToDoTasks = false;
                     DisplayToDoLists();
                 }
-                if (selection > 0 && selection <= ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count)
+                else if (selection > 0 && selection <= 9 && !hasMoreThanNineTasks)
                 {
                     inDisplayToDoTasks = false;
                     ToDoApp.SetCurrentTask(selection, (int)ToDoApp.CurrentTaskList.Id);
                     DisplayToDoTaskDetails();
+                }
+                else if(selection > 0 && selection <= 8 && hasMoreThanNineTasks && pageCount == 1)
+                {
+                    inDisplayToDoTasks = false;
+                    ToDoApp.SetCurrentTask(selection, (int)ToDoApp.CurrentTaskList.Id);
+                    DisplayToDoTaskDetails();
+                }
+                else if(selection > 0 && selection <= 7 && hasMoreThanNineTasks && pageCount > 1)
+                {
+                    inDisplayToDoTasks = false;
+                    ToDoApp.SetCurrentTask(selection + ((pageCount - 1) * 7) + 1, (int)ToDoApp.CurrentTaskList.Id);
+                    DisplayToDoTaskDetails();
+                }
+                else if (selection == 8 && hasMoreThanNineTasks && pageCount > 1)
+                {
+                    pageCount--;
+                }
+                else if (selection == 9 && hasMoreThanNineTasks && ToDoApp.CurrentDictOfTasks[(int)ToDoApp.CurrentTaskList.Id].Count >= ((pageCount - 1) * 7) + 8)
+                {
+                    pageCount++;
                 }
             }
         }

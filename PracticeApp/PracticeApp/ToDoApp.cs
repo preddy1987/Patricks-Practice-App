@@ -114,6 +114,49 @@ namespace PracticeApp
             AddNewTask(taskNine);
             #endregion
         }
+        public void CreateEvenMoreDummyData(int numberOfExtraTasksAndLists)
+        {
+            //adding more TaskLists
+            for (int i = 4; i <= numberOfExtraTasksAndLists; i++)
+            {
+                TaskList extraTaskList = new TaskList()
+                {
+                    Name = $"Extra List #{i}",
+                    Description = $"Extra List of tasks"
+                };
+                AddNewList(extraTaskList);
+            }
+            //adding more Tasks
+            foreach (KeyValuePair<int, TaskList> taskList in CurrentDictOfTaskLists)
+            {
+                if (CurrentDictOfTasks.ContainsKey(taskList.Key))
+                {
+                    for (int i = CurrentDictOfTasks[taskList.Key].Count; i <= numberOfExtraTasksAndLists; i++)
+                    {
+                        ToDoTask extraTasks = new ToDoTask()
+                        {
+                            Name = $"Extra Task #{i}",
+                            Description = "Extra Task for Testing",
+                            ListId = taskList.Key
+                        };
+                        AddNewTask(extraTasks);
+                    }
+                }
+                else
+                {
+                    for (int i = 1; i <= numberOfExtraTasksAndLists; i++)
+                    {
+                        ToDoTask extraTasks = new ToDoTask()
+                        {
+                            Name = $"Extra Task #{i}",
+                            Description = "Extra Task for Testing",
+                            ListId = taskList.Key
+                        };
+                        AddNewTask(extraTasks);
+                    }
+                }
+            }
+        }
         #endregion
 
         #region TaskList Methods
