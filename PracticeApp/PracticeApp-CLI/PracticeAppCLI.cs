@@ -291,7 +291,7 @@ namespace PracticeAppCLI
                         {
                             if (task.Id <= ((pageCount * 7) + 1) && task.Id > ((pageCount - 1) * 7) + 1)
                             {
-                                Console.WriteLine($"[{task.Id}] {task.Name}");
+                                Console.WriteLine($"[{task.Id - (((pageCount - 1) * 7) + 1)}] {task.Name}");
                             }
                         }
                         Console.WriteLine();
