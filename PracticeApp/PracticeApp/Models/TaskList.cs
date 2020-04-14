@@ -8,5 +8,7 @@ namespace PracticeApp.Models
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public List<TaskList> ToDoTasks { get; set; }
+
     }
 }

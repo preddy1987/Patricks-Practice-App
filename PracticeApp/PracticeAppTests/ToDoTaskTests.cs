@@ -2,6 +2,7 @@
 using PracticeApp.Models;
 using PracticeApp;
 using System.Collections.Generic;
+using System;
 
 namespace PracticeAppTests
 {
@@ -16,21 +17,23 @@ namespace PracticeAppTests
             {
                 Name = "Test Task Name",
                 Description = "Test Task Description",
-                ListId = 1
+                ListId = Guid.NewGuid()
             };
             testApp.AddNewTask(testTask);
 
             int expectedCount = 1;
             string expectedName = testTask.Name;
             string expectedDesc = testTask.Description;
-            int expectedListId = testTask.ListId;
-            int expectedId = 1;
+            Guid? expectedListId = testTask.ListId;
+            Guid? expectedId = testTask.Id;
 
-            int actualCount = testApp.CurrentDictOfTasks.Count;
-            string actualName = testApp.CurrentDictOfTasks[testTask.ListId][0].Name;
-            string actualDesc = testApp.CurrentDictOfTasks[testTask.ListId][0].Description;
-            int actualListId = testApp.CurrentDictOfTasks[testTask.ListId][0].ListId;
-            int actualId = (int)testApp.CurrentDictOfTasks[testTask.ListId][0].Id;
+            ToDoTask addedToDoTask = testApp.CurrentToDoTasks.Find(t=> t.Id == testTask.Id);
+
+            int actualCount = testApp.CurrentToDoTasks.Count;
+            string actualName = addedToDoTask.Name;
+            string actualDesc = addedToDoTask.Description;
+            Guid? actualListId = addedToDoTask.ListId;
+            Guid? actualId = addedToDoTask.Id;
 
             Assert.AreEqual(expectedCount, actualCount);
             Assert.AreEqual(expectedName, actualName);
@@ -40,37 +43,38 @@ namespace PracticeAppTests
 
         }
         [TestMethod]
-        public void ChangeTask()
+        public void TestUpdateToDoTask()
         {
             ToDoApp testApp = new ToDoApp();
             ToDoTask testTask = new ToDoTask()
             {
                 Name = "Test Task Name",
                 Description = "Test Task Description",
-                ListId = 1,
-                Id = 1
+                ListId = Guid.NewGuid(),
             };
-            testApp.CurrentDictOfTasks.Add(testTask.ListId,new List<ToDoTask>() { testTask });
+            testApp.CurrentToDoTasks.Add(testTask);
 
             ToDoTask updatedTask = new ToDoTask()
             {
                 Name = "Name Test Task",
                 Description = "Description Test Task",
-                ListId = 1,
-                Id = 1
+                ListId = testTask.ListId,
+                Id = testTask.Id
             };
 
-            testApp.ChangeTask(updatedTask);
+            testApp.UpdateToDoTask(updatedTask);
 
             string expectedName = updatedTask.Name;
             string expectedDesc = updatedTask.Description;
-            int expectedListId = updatedTask.ListId;
-            int expectedId = (int)updatedTask.Id;
+            Guid? expectedListId = updatedTask.ListId;
+            Guid? expectedId = updatedTask.Id;
 
-            string actualName = testApp.CurrentDictOfTasks[updatedTask.ListId][0].Name;
-            string actualDesc = testApp.CurrentDictOfTasks[updatedTask.ListId][0].Description;
-            int actualListId = testApp.CurrentDictOfTasks[updatedTask.ListId][0].ListId;
-            int actualId = (int)testApp.CurrentDictOfTasks[updatedTask.ListId][0].Id;
+            ToDoTask addedToDoTask = testApp.CurrentToDoTasks.Find(t => t.Id == testTask.Id);
+
+            string actualName = addedToDoTask.Name;
+            string actualDesc = addedToDoTask.Description;
+            Guid? actualListId = addedToDoTask.ListId;
+            Guid? actualId = addedToDoTask.Id;
 
             Assert.AreEqual(expectedName, actualName);
             Assert.AreEqual(expectedDesc, actualDesc);
@@ -85,23 +89,21 @@ namespace PracticeAppTests
             {
                 Name = "Test Task Name",
                 Description = "Test Task Description",
-                ListId = 1,
-                Id = 1
+                ListId = Guid.NewGuid(),
             };
-            testApp.CurrentDictOfTasks.Add(testTask.ListId, new List<ToDoTask>() { testTask });
+            testApp.CurrentToDoTasks.Add(testTask);
             ToDoTask testTaskTwo = new ToDoTask()
             {
                 Name = "Test Task Name",
                 Description = "Test Task Description",
-                ListId = 1,
-                Id = 2
+                ListId = Guid.NewGuid(),
             };
-            testApp.CurrentDictOfTasks[testTaskTwo.ListId].Add(testTaskTwo);
+            testApp.CurrentToDoTasks.Add(testTaskTwo);
 
-            testApp.RemoveTask(testTask.ListId, testTask.Id);
+            testApp.RemoveTask(testTask.Id);
 
             int expectedCount = 1;
-            int actualCount = testApp.CurrentDictOfTasks[1].Count;
+            int actualCount = testApp.CurrentToDoTasks.Count;
 
             Assert.AreEqual(expectedCount, actualCount);
         }

@@ -6,6 +6,14 @@ namespace PracticeApp.Models
 {
     public abstract class BaseItem
     {
-        public int? Id;
+        public Guid? Id { get; set; }
+
+        public BaseItem()
+        {
+            if(!Id.HasValue)
+            {
+                Id = Guid.NewGuid();
+            }
+        }
     }
 }
