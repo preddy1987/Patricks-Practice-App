@@ -106,8 +106,8 @@ namespace PracticeAppCLI
             };
             #endregion
             ToDoApp toDoApp = new ToDoApp(taskLists, toDoTasks);
-            //PracticeAppCLI appCLI = new PracticeAppCLI(toDoApp);
-            //appCLI.MainMenu();
+            PracticeAppCLI appCLI = new PracticeAppCLI(toDoApp);
+            appCLI.MainMenu();
         }
     }
 }

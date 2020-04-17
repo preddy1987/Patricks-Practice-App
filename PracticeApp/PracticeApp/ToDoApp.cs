@@ -201,6 +201,11 @@ namespace PracticeApp
         {
             CurrentToDoTasks.Add(newTask);
         }
+        public List<ToDoTask> GetToDoTasks(Guid? listid)
+        {
+            List<ToDoTask> toDoTasks = CurrentToDoTasks.Where(t => t.ListId == listid).ToList();
+            return toDoTasks;
+        }
         public void UpdateToDoTask(ToDoTask updatedTask)
         {
             CurrentToDoTasks.Where(t => t.Id == updatedTask.Id).Select(t => { t.Name = updatedTask.Name; t.Description = updatedTask.Description; return t; }).ToList();
