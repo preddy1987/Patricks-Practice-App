@@ -9,21 +9,44 @@ namespace PracticeAppCLI
     {
         static void Main(string[] args)
         {
+            #region Categories
+            Category codingListCategory = new Category()
+            {
+                Name = "Coding Lists"
+            };
+            Category shoppingListCategory = new Category()
+            {
+                Name = "Shopping Lists"
+            };
+            Category socialDistanceCategory = new Category()
+            {
+                Name = "Goverment Mandated Lists"
+            };
+            List<Category> categories = new List<Category>()
+            {
+                codingListCategory,
+                shoppingListCategory,
+                socialDistanceCategory
+            };
+            #endregion
             #region TaskLists
             TaskList TaskListOne = new TaskList()
             {
                 Name = "Code!",
-                Description = "Eat Sleep Code"
+                Description = "Eat Sleep Code",
+                CategoryId = codingListCategory.Id
             };
             TaskList TaskListTwo = new TaskList()
             {
                 Name = "Social Distancing",
-                Description = "Maintain a healthy isolation from others"
+                Description = "Maintain a healthy isolation from others",
+                CategoryId = socialDistanceCategory.Id
             };
             TaskList TaskListThree = new TaskList()
             {
                 Name = "Grocery List",
-                Description = "Things to get from the store"
+                Description = "Things to get from the store",
+                CategoryId = shoppingListCategory.Id
             };
             List<TaskList> taskLists = new List<TaskList>()
             {
@@ -105,7 +128,37 @@ namespace PracticeAppCLI
                 taskNine
             };
             #endregion
-            ToDoApp toDoApp = new ToDoApp(taskLists, toDoTasks);
+            #region Extra Lists and Tasks
+            int numberOfListsToMake = 43;
+            int numberOfTasksPerList = 43;
+            Category extraCategory = new Category()
+            {
+                Name = "Category: Extra Lists"
+            };
+            categories.Add(extraCategory);
+
+            for (int i = 1; i <= numberOfListsToMake; i++)
+            {
+                TaskList taskList = new TaskList()
+                {
+                    Name = $"Extra List #{i}",
+                    Description = $"Extra Desc {i}",
+                    CategoryId = extraCategory.Id
+                };
+                taskLists.Add(taskList);
+                for (int x = 1; x <= numberOfTasksPerList; x++)
+                {
+                    ToDoTask toDoTask = new ToDoTask()
+                    {
+                        Name = $"Extra Task #{x} for {taskList.Name}",
+                        Description = $"Extra Desc {x} for {taskList.Description}",
+                        ListId = taskList.Id
+                    };
+                    toDoTasks.Add(toDoTask);
+                }
+            }
+            #endregion
+            ToDoApp toDoApp = new ToDoApp(taskLists, toDoTasks, categories);
             PracticeAppCLI appCLI = new PracticeAppCLI(toDoApp);
             appCLI.MainMenu();
         }

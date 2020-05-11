@@ -4,10 +4,8 @@ using System.Text;
 
 namespace PracticeApp.Models
 {
-    public class TaskList : BaseItem
+    public class Category : BaseItem
     {
         public string Name { get; set; }
-        public string Description { get; set; }
-        public Guid? CategoryId { get; set; }
     }
 }
